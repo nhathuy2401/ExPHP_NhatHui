@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  webserver:
+    image: phpstorm/php-71-apache-xdebug-26
+    ports:
+      - "81:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal
+  db:
+    image: mysql
+    ports:
+      - "3306:80"
+    environment:
+      MYSQL_DATABASE: myDb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123123
+      MYSQL_ROOT_PASSWORD: 123123
+    volumes:
+      - ./dump:/docker-entrypoint-initdb.d
+      - persistent:/var/lib/mysql
+    networks:
+      - default
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db:db
+    ports:
+      - 8000:80
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: test
+volumes:
+  persistent:
